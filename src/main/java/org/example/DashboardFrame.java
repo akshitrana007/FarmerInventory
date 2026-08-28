@@ -91,10 +91,11 @@ public class DashboardFrame extends JFrame {
         JButton inventoryBtn = createNavButton("Inventory");
         JButton salesBtn = createNavButton("Sales");
         JButton reportsBtn = createNavButton("Reports");
+        JButton ordersBtn = createNavButton("Orders");
         navPanel.add(inventoryBtn);
         navPanel.add(salesBtn);
         navPanel.add(reportsBtn);
-
+        navPanel.add(ordersBtn);
         JPanel southCombined = new JPanel(new BorderLayout());
         southCombined.setBackground(BACKGROUND);
         southCombined.add(bottomPanel, BorderLayout.CENTER);
@@ -103,6 +104,7 @@ public class DashboardFrame extends JFrame {
         inventoryBtn.addActionListener(e -> new InventoryFrame(currentFarmer));
         salesBtn.addActionListener(e -> new SalesFrame(currentFarmer));
         reportsBtn.addActionListener(e -> new ReportsFrame(currentFarmer));
+        ordersBtn.addActionListener(e -> new OrdersFrame(currentFarmer));
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {

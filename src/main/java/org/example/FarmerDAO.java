@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FarmerDAO {
 
@@ -57,5 +59,92 @@ public class FarmerDAO {
             System.out.println("Error registering farmer: " + e.getMessage());
             return false;
         }
+    }
+
+    // Get all farmers (for customers to browse)
+    public List<Farmer> getAllFarmers() {
+        List<Farmer> farmers = new ArrayList<>();
+        String sql = "SELECT * FROM farmers";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Farmer f = new Farmer(
+                        rs.getInt("farmer_id"),
+                        rs.getString("full_name"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("contact_number"),
+                        rs.getString("farm_location")
+                );
+                farmers.add(f);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error fetching farmers: " + e.getMessage());
+        }
+
+        return farmers;
+    }
+
+    // Search farmers by area/location
+    public List<Farmer> searchFarmersByLocation(String keyword) {
+        List<Farmer> farmers = new ArrayList<>();
+        String sql = "SELECT * FROM farmers WHERE farm_location LIKE ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + keyword + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Farmer f = new Farmer(
+                        rs.getInt("farmer_id"),
+                        rs.getString("full_name"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("contact_number"),
+                        rs.getString("farm_location")
+                );
+                farmers.add(f);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error searching farmers by location: " + e.getMessage());
+        }
+
+        return farmers;
+    }
+    // Search farmers by name
+    public List<Farmer> searchFarmersByName(String keyword) {
+        List<Farmer> farmers = new ArrayList<>();
+        String sql = "SELECT * FROM farmers WHERE full_name LIKE ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + keyword + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Farmer f = new Farmer(
+                        rs.getInt("farmer_id"),
+                        rs.getString("full_name"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("contact_number"),
+                        rs.getString("farm_location")
+                );
+                farmers.add(f);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error searching farmers by name: " + e.getMessage());
+        }
+
+        return farmers;
     }
 }

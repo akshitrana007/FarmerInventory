@@ -133,6 +133,39 @@ public class ProductDAO {
 
         return products;
     }
+
+    // Search products by name across ALL farmers (for customer browsing)
+    public List<Product> searchProductsAllFarmers(String keyword) {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE product_name LIKE ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + keyword + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Product p = new Product(
+                        rs.getInt("product_id"),
+                        rs.getInt("farmer_id"),
+                        rs.getString("product_name"),
+                        rs.getString("category"),
+                        rs.getInt("stock_quantity"),
+                        rs.getString("unit"),
+                        rs.getDouble("price_per_unit"),
+                        rs.getInt("low_stock_threshold")
+                );
+                products.add(p);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error searching products across farmers: " + e.getMessage());
+        }
+
+        return products;
+    }
+
     // Get total number of distinct products
     public int getTotalProducts(int farmerId) {
         String sql = "SELECT COUNT(*) AS total FROM products WHERE farmer_id = ?";
@@ -146,6 +179,7 @@ public class ProductDAO {
         }
         return 0;
     }
+
     // Get total stock across all products
     public int getTotalStock(int farmerId) {
         String sql = "SELECT SUM(stock_quantity) AS total FROM products WHERE farmer_id = ?";
@@ -159,6 +193,7 @@ public class ProductDAO {
         }
         return 0;
     }
+
     // Get count of low-stock products
     public int getLowStockCount(int farmerId) {
         String sql = "SELECT COUNT(*) AS total FROM products WHERE stock_quantity <= low_stock_threshold AND farmer_id = ?";

@@ -20,7 +20,7 @@ public class HandshakePanel extends JPanel {
         int h = getHeight();
 
         // Sky gradient background
-        GradientPaint sky = new GradientPaint(0, 0, new Color(0,0,0), 0, h, new Color(200, 235, 200));
+        GradientPaint sky = new GradientPaint(0, 0, new Color(135, 206, 235), 0, h, new Color(200, 235, 200));
         g2.setPaint(sky);
         g2.fillRect(0, 0, w, h);
 
@@ -36,7 +36,7 @@ public class HandshakePanel extends JPanel {
 
         // ---- Farmer (left figure) ----
         int farmerX = w / 2 - 90;
-        drawPerson(g2, farmerX, groundY, new Color(80,90,75), new Color(85, 130, 80), true);
+        drawPerson(g2, farmerX, groundY, new Color(240, 200, 160), new Color(85, 130, 80), true);
 
         // ---- Customer (right figure) ----
         int customerX = w / 2 + 40;

@@ -6,7 +6,7 @@ import java.awt.*;
 public class CustomerRegisterFrame extends JFrame {
 
     public CustomerRegisterFrame() {
-        setTitle("Customer Registration");
+        setTitle(LanguageManager.get("custregister.window.title"));
         setSize(420, 420);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -18,8 +18,8 @@ public class CustomerRegisterFrame extends JFrame {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel titleLabel = new JLabel("Create Customer Account", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        JLabel titleLabel = new JLabel(LanguageManager.get("custregister.heading"), SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Nirmala UI", Font.BOLD, 18));
         add(titleLabel, gbc);
 
         JTextField nameField = new JTextField();
@@ -28,27 +28,27 @@ public class CustomerRegisterFrame extends JFrame {
         JTextField usernameField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
 
-        add(new JLabel("Full Name:"), gbc);
+        add(new JLabel(LanguageManager.get("custregister.label.fullname")), gbc);
         add(nameField, gbc);
 
-        add(new JLabel("Contact Number:"), gbc);
+        add(new JLabel(LanguageManager.get("custregister.label.contact")), gbc);
         add(contactField, gbc);
 
-        add(new JLabel("Address:"), gbc);
+        add(new JLabel(LanguageManager.get("custregister.label.address")), gbc);
         add(addressField, gbc);
 
-        add(new JLabel("Choose Username:"), gbc);
+        add(new JLabel(LanguageManager.get("custregister.label.username")), gbc);
         add(usernameField, gbc);
 
-        add(new JLabel("Choose Password:"), gbc);
+        add(new JLabel(LanguageManager.get("custregister.label.password")), gbc);
         add(passwordField, gbc);
 
-        JButton registerButton = new JButton("Register");
+        JButton registerButton = new JButton(LanguageManager.get("custregister.button.register"));
         registerButton.setBackground(new Color(76, 140, 74));
         registerButton.setForeground(Color.WHITE);
         add(registerButton, gbc);
 
-        JButton backButton = new JButton("Back to Role Selection");
+        JButton backButton = new JButton(LanguageManager.get("custregister.link.back"));
         add(backButton, gbc);
 
         registerButton.addActionListener(e -> {
@@ -59,7 +59,7 @@ public class CustomerRegisterFrame extends JFrame {
             String password = new String(passwordField.getPassword());
 
             if (name.isEmpty() || username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Name, username and password are required.");
+                JOptionPane.showMessageDialog(this, LanguageManager.get("custregister.msg.required"));
                 return;
             }
 
@@ -68,11 +68,11 @@ public class CustomerRegisterFrame extends JFrame {
             boolean success = dao.registerCustomer(customer);
 
             if (success) {
-                JOptionPane.showMessageDialog(this, "Registration successful! Please log in.");
+                JOptionPane.showMessageDialog(this, LanguageManager.get("custregister.msg.success"));
                 dispose();
                 new CustomerLoginFrame();
             } else {
-                JOptionPane.showMessageDialog(this, "Registration failed. Username may already be taken.");
+                JOptionPane.showMessageDialog(this, LanguageManager.get("custregister.msg.fail"));
             }
         });
 

@@ -15,12 +15,12 @@ public class LoginFrame extends JFrame {
     private static final Color PRIMARY_GREEN = new Color(76, 145, 65);
     private static final Color PRIMARY_GREEN_DARK = new Color(60, 120, 50);
     private static final Color BACKGROUND = new Color(245, 250, 240);
-    private static final Font LABEL_FONT = new Font("Segoe UI", Font.PLAIN, 14);
-    private static final Font FIELD_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+    private static final Font LABEL_FONT = new Font("Nirmala UI", Font.PLAIN, 14);
+    private static final Font FIELD_FONT = new Font("Nirmala UI", Font.PLAIN, 14);
 
     public LoginFrame() {
 
-        setTitle("Farmer Inventory System - Login");
+        setTitle(LanguageManager.get("login.window.title"));
         setSize(420, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -37,8 +37,8 @@ public class LoginFrame extends JFrame {
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel titleLabel = new JLabel("Farmer Login");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        JLabel titleLabel = new JLabel(LanguageManager.get("login.heading"));
+        titleLabel.setFont(new Font("Nirmala UI", Font.BOLD, 24));
         titleLabel.setForeground(PRIMARY_GREEN_DARK);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -52,7 +52,7 @@ public class LoginFrame extends JFrame {
 
         gbc.gridy = 1;
         gbc.gridx = 0;
-        JLabel userLabel = new JLabel("Username:");
+        JLabel userLabel = new JLabel(LanguageManager.get("login.label.username"));
         userLabel.setFont(LABEL_FONT);
         formContainer.add(userLabel, gbc);
 
@@ -66,7 +66,7 @@ public class LoginFrame extends JFrame {
 
         gbc.gridy = 2;
         gbc.gridx = 0;
-        JLabel passLabel = new JLabel("Password:");
+        JLabel passLabel = new JLabel(LanguageManager.get("login.label.password"));
         passLabel.setFont(LABEL_FONT);
         formContainer.add(passLabel, gbc);
 
@@ -78,8 +78,8 @@ public class LoginFrame extends JFrame {
         gbc.gridx = 1;
         formContainer.add(passwordField, gbc);
 
-        loginButton = new JButton("Login");
-        loginButton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        loginButton = new JButton(LanguageManager.get("login.button.login"));
+        loginButton.setFont(new Font("Nirmala UI", Font.BOLD, 15));
         loginButton.setBackground(PRIMARY_GREEN);
         loginButton.setForeground(Color.WHITE);
         loginButton.setFocusPainted(false);
@@ -93,17 +93,17 @@ public class LoginFrame extends JFrame {
 
         messageLabel = new JLabel(" ");
         messageLabel.setForeground(new Color(200, 50, 50));
-        messageLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        messageLabel.setFont(new Font("Nirmala UI", Font.PLAIN, 13));
         messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 4;
         gbc.insets = new Insets(8, 8, 8, 8);
         formContainer.add(messageLabel, gbc);
 
-        JButton registerButton = new JButton("New farmer? Register here");
+        JButton registerButton = new JButton(LanguageManager.get("login.link.register"));
         registerButton.setBorderPainted(false);
         registerButton.setContentAreaFilled(false);
         registerButton.setForeground(PRIMARY_GREEN_DARK);
-        registerButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        registerButton.setFont(new Font("Nirmala UI", Font.BOLD, 13));
         registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         gbc.gridy = 5;
         gbc.gridx = 0;
@@ -135,7 +135,7 @@ public class LoginFrame extends JFrame {
 
         if (username.isEmpty() || password.isEmpty()) {
             messageLabel.setForeground(new Color(200, 50, 50));
-            messageLabel.setText("Please enter both username and password.");
+            messageLabel.setText(LanguageManager.get("login.error.empty"));
             return;
         }
 
@@ -147,7 +147,7 @@ public class LoginFrame extends JFrame {
             dispose();
         } else {
             messageLabel.setForeground(new Color(200, 50, 50));
-            messageLabel.setText("Invalid username or password.");
+            messageLabel.setText(LanguageManager.get("login.error.invalid"));
         }
     }
 }

@@ -28,7 +28,9 @@ public class FarmerDAO {
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("contact_number"),
-                        rs.getString("farm_location")
+                        rs.getString("farm_location"),
+                        rs.getString("state"),
+                        rs.getString("farm_address")
                 );
             }
 
@@ -41,7 +43,7 @@ public class FarmerDAO {
 
     // Register a new farmer
     public boolean registerFarmer(Farmer farmer) {
-        String sql = "INSERT INTO farmers (full_name, username, password, contact_number, farm_location) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO farmers (full_name, username, password, contact_number, farm_location, state, farm_address) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -51,6 +53,8 @@ public class FarmerDAO {
             stmt.setString(3, farmer.getPassword());
             stmt.setString(4, farmer.getContactNumber());
             stmt.setString(5, farmer.getFarmLocation());
+            stmt.setString(6, farmer.getState());
+            stmt.setString(7, farmer.getFarmAddress());
 
             int rows = stmt.executeUpdate();
             return rows > 0;
@@ -77,7 +81,9 @@ public class FarmerDAO {
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("contact_number"),
-                        rs.getString("farm_location")
+                        rs.getString("farm_location"),
+                        rs.getString("state"),
+                        rs.getString("farm_address")
                 );
                 farmers.add(f);
             }
@@ -107,7 +113,9 @@ public class FarmerDAO {
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("contact_number"),
-                        rs.getString("farm_location")
+                        rs.getString("farm_location"),
+                        rs.getString("state"),
+                        rs.getString("farm_address")
                 );
                 farmers.add(f);
             }
@@ -136,7 +144,9 @@ public class FarmerDAO {
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("contact_number"),
-                        rs.getString("farm_location")
+                        rs.getString("farm_location"),
+                        rs.getString("state"),
+                        rs.getString("farm_address")
                 );
                 farmers.add(f);
             }

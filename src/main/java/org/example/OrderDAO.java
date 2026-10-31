@@ -9,10 +9,18 @@ import java.util.List;
 
 public class OrderDAO {
 
-    // Customer creates a new order request
+    // Customer creates a new order request (pickup — no delivery details)
     public boolean createOrder(int customerId, int farmerId, int productId, int quantity) {
-        String sql = "INSERT INTO orders (customer_id, farmer_id, product_id, quantity, status) " +
-                "VALUES (?, ?, ?, ?, 'PENDING')";
+        return createOrder(customerId, farmerId, productId, quantity, "PICKUP", null, 0, 0);
+    }
+
+    // Customer creates a new order request, with delivery details
+    public boolean createOrder(int customerId, int farmerId, int productId, int quantity,
+                               String deliveryMode, String deliveryAddress,
+                               double distanceKm, double deliveryCharge) {
+        String sql = "INSERT INTO orders " +
+                "(customer_id, farmer_id, product_id, quantity, status, delivery_mode, delivery_address, distance_km, delivery_charge, delivery_status) " +
+                "VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, 'PENDING')";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -21,6 +29,21 @@ public class OrderDAO {
             stmt.setInt(2, farmerId);
             stmt.setInt(3, productId);
             stmt.setInt(4, quantity);
+            stmt.setString(5, deliveryMode);
+
+            if (deliveryAddress == null) {
+                stmt.setNull(6, java.sql.Types.VARCHAR);
+            } else {
+                stmt.setString(6, deliveryAddress);
+            }
+
+            if ("DELIVERY".equals(deliveryMode)) {
+                stmt.setDouble(7, distanceKm);
+                stmt.setDouble(8, deliveryCharge);
+            } else {
+                stmt.setNull(7, java.sql.Types.DOUBLE);
+                stmt.setNull(8, java.sql.Types.DOUBLE);
+            }
 
             int rows = stmt.executeUpdate();
             return rows > 0;
@@ -54,6 +77,34 @@ public class OrderDAO {
 
         } catch (SQLException e) {
             System.out.println("Error fetching pending orders: " + e.getMessage());
+        }
+
+        return orders;
+    }
+
+    // Farmer views all ACCEPTED orders (useful for managing delivery status)
+    public List<Order> getAcceptedOrdersForFarmer(int farmerId) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.*, c.customer_name, c.contact_number, p.product_name, p.price_per_unit " +
+                "FROM orders o " +
+                "JOIN customers c ON o.customer_id = c.customer_id " +
+                "JOIN products p ON o.product_id = p.product_id " +
+                "WHERE o.farmer_id = ? AND o.status = 'ACCEPTED' " +
+                "ORDER BY o.responded_at DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, farmerId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Order o = mapRow(rs);
+                orders.add(o);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error fetching accepted orders: " + e.getMessage());
         }
 
         return orders;
@@ -198,6 +249,24 @@ public class OrderDAO {
         }
     }
 
+    // Farmer updates the delivery status of an accepted order
+    public boolean updateDeliveryStatus(int orderId, String newDeliveryStatus) {
+        String sql = "UPDATE orders SET delivery_status = ? WHERE order_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newDeliveryStatus);
+            stmt.setInt(2, orderId);
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error updating delivery status: " + e.getMessage());
+            return false;
+        }
+    }
+
     // Helper: turns one row of the ResultSet into an Order object
     private Order mapRow(ResultSet rs) throws SQLException {
         Order o = new Order(
@@ -214,6 +283,13 @@ public class OrderDAO {
         o.setCustomerContact(rs.getString("contact_number"));
         o.setProductName(rs.getString("product_name"));
         o.setPricePerUnit(rs.getDouble("price_per_unit"));
+
+        o.setDeliveryMode(rs.getString("delivery_mode"));
+        o.setDeliveryAddress(rs.getString("delivery_address"));
+        o.setDistanceKm(rs.getDouble("distance_km"));
+        o.setDeliveryCharge(rs.getDouble("delivery_charge"));
+        o.setDeliveryStatus(rs.getString("delivery_status"));
+
         return o;
     }
 }

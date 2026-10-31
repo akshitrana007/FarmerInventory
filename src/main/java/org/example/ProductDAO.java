@@ -64,7 +64,7 @@ public class ProductDAO {
         return products;
     }
 
-    // Update stock quantity
+    // Update stock quantity only (kept for backward compatibility)
     public boolean updateStock(int productId, int newQuantity) {
         String sql = "UPDATE products SET stock_quantity = ? WHERE product_id = ?";
 
@@ -79,6 +79,32 @@ public class ProductDAO {
 
         } catch (SQLException e) {
             System.out.println("Error updating stock: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // ---- NEW: Update every editable field of a product at once ----
+    public boolean updateProduct(int productId, String name, String category, int stock,
+                                 String unit, double price, int threshold) {
+        String sql = "UPDATE products SET product_name = ?, category = ?, stock_quantity = ?, " +
+                "unit = ?, price_per_unit = ?, low_stock_threshold = ? WHERE product_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+            stmt.setString(2, category);
+            stmt.setInt(3, stock);
+            stmt.setString(4, unit);
+            stmt.setDouble(5, price);
+            stmt.setInt(6, threshold);
+            stmt.setInt(7, productId);
+
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error updating product: " + e.getMessage());
             return false;
         }
     }
